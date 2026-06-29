@@ -23,6 +23,15 @@ POSITIVE_WORDS = [
     "chill",
     "relaxed",
     "amazing",
+    # slang — clear positive signal, not intensifiers
+    "fire",
+    "slaps",
+    "bussin",
+    "lit",
+    "goated",
+    "hype",
+    "valid",
+    'sick',
 ]
 
 NEGATIVE_WORDS = [
@@ -36,6 +45,10 @@ NEGATIVE_WORDS = [
     "stressed",
     "hate",
     "boring",
+    # slang — clear negative signal
+    "mid",
+    "trash",
+    "cringe",
 ]
 
 # ---------------------------------------------------------------------
@@ -50,6 +63,24 @@ SAMPLE_POSTS = [
     "This is fine",
     "So excited for the weekend",
     "I am not happy about this",
+    "This game was boring at first, then it became exciting",
+    "I feel very ill",
+    "I feel kinda bad when I am having fun instead of doing homework",
+    "I get upset when I don't sleep well",
+    "I do not feel tired at all",
+    "I find it amazing how boring this task is",
+    # slang
+    "This assignment is lowkey fire",
+    "That exam was so mid I almost fell asleep",
+    # emojis — edge case: model currently can't read these, so they score neutral
+    "Just got my grades back :)",
+    "Missed the bus again :(",
+    # sarcasm — hard for rule-based models; human label reflects true intent
+    "Oh great, another Monday",
+    "I absolutely love waiting in line for an hour",
+    # ambiguous / mixed
+    "Lowkey stressed but kind of proud of myself",
+    "I had a great time but I miss everyone already",
 ]
 
 # Human labels for each post above.
@@ -65,6 +96,24 @@ TRUE_LABELS = [
     "neutral",   # "This is fine"
     "positive",  # "So excited for the weekend"
     "negative",  # "I am not happy about this"
+    "positive",  # "This game was boring at first, but then it became exciting"
+    "negative",  # "I feel very ill"
+    "negative",  # "I feel kinda bad when I am having fun instead of doing homework"
+    "negative",  # "I get upset when I don't sleep well"
+    "positive",  # "I do not feel tired at all"
+    "mixed",     # "I find it amazing how boring this task is"
+    # slang
+    "positive",  # "This assignment is lowkey fire"
+    "negative",  # "That exam was so mid I almost fell asleep"
+    # emojis — labeled by human intent; model will likely miss these
+    "positive",  # "Just got my grades back :)"
+    "negative",  # "Missed the bus again :("
+    # sarcasm — labeled by true sentiment, not surface words
+    "negative",  # "Oh great, another Monday"
+    "negative",  # "I absolutely love waiting in line for an hour"
+    # ambiguous / mixed
+    "mixed",     # "Lowkey stressed but kind of proud of myself"
+    "mixed",     # "I had a great time but I miss everyone already"
 ]
 
 # TODO: Add 5-10 more posts and labels.

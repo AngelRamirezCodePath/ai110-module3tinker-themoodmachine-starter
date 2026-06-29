@@ -101,6 +101,35 @@ Examples:
 - It cannot detect sarcasm reliably  
 - It depends heavily on the words you chose or labeled
 
+---
+
+### Documented limitation: no understanding of sentence structure or temporal order
+
+**Example that fails:**  
+> "This game was boring at first, then it became exciting"  
+> Predicted: `negative` — True label: `positive`
+
+**What the model does:**  
+After preprocessing, the tokens are:  
+`['this', 'game', 'was', 'boring', 'at', 'first', 'then', 'it', 'became', 'exciting']`
+
+The model loops over every token and treats each one as an independent vote. `"boring"` is in `NEGATIVE_WORDS` and scores `−1`. `"exciting"` is not in `POSITIVE_WORDS` so it scores nothing. Final score: `−1` → predicted negative.
+
+**Why this is wrong:**  
+The words "at first" and "then" signal a reversal — the second clause overrides the first. A human reader understands that the overall sentiment is positive because the boredom was a past state that was overcome. The model has no concept of temporal or contrastive structure. It counts all tokens equally regardless of where they appear in the sentence, so it cannot tell the difference between:
+
+- "boring at first, then exciting" (net positive — reversal)
+- "boring and exciting" (genuinely mixed)
+- "exciting at first, then boring" (net negative — reversal)
+
+All three would produce the same score given the same vocabulary matches.
+
+**Root cause:**  
+Rule-based bag-of-words scoring is order-blind. Words like `"at first"`, `"but"`, `"then"`, `"eventually"`, and `"used to"` are structural signals that change how surrounding sentiment words should be weighted — but the model ignores them entirely.
+
+**What would fix it:**  
+A model that encodes word order and clause structure (such as a trained sequence model or transformer) would handle this correctly. Within the rule-based approach, you could add a heuristic: if `"then"` or `"but"` appears, give the tokens after it double weight. This is a patch, not a real fix, and would still fail on complex sentence structures.
+
 ## 7. Ethical Considerations
 
 Discuss any potential impacts of using mood detection in real applications.  
